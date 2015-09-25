@@ -1,0 +1,66 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+<link rel="import" href="bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="bower_components/paper-styles/color.html">
+
+<dom-module id="star-rating">
+<template>
+<style>
+:host {
+  display: inline-block;
+}
+.ratings iron-icon.star {
+  --iron-icon-height: 16px;
+  --iron-icon-width: 16px;
+  color: var(--paper-yellow-700);
+}
+.rating {
+  opacity: var(--dark-primary-opacity);
+  margin-left: 8px;
+  margin-right: 2px;
+}
+.total {
+  opacity: var(--dark-primary-opacity);
+}
+</style>
+<div class="layout horizontal center ratings">
+  <template is="dom-repeat" items="[[stars]]" as="star">
+    <iron-icon icon="{{_computeIcon(star.active)}}" class="star"></iron-icon>
+  </template>
+  <span class="rating">{{rating}}</span> (<span class="total">{{total}}</span>)
+</div>
+</template>
+</dom-module>
+<script>
+  Polymer({
+    is: 'star-rating',
+    properties: {
+      count: {
+        type: Number,
+        value: 5
+      },
+      total: {
+        type: Number,
+        value: 0
+      },
+      rating: {
+        type: Number,
+        value: 0
+      },
+      stars: {
+        type: Array,
+        readOnly: true,
+        computed: '_computeStars(rating, count)'
+      }
+    },
+    _computeStars: function(rating, count) {
+      var stars = [];
+      for (var i = 1; i <= count; ++i) {
+        stars.push({active: rating >= i});
+      }
+      return stars;
+    },
+    _computeIcon: function(active) {
+      return active ? 'icons:star' : 'icons:star-border';
+    }
+  });
+</script>

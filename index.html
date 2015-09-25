@@ -1,0 +1,127 @@
+<!doctype html>
+<html>
+<head>
+<title>Polymer material design places search</title>
+<script src="bower_components/webcomponentsjs/webcomponents-lite.min.js" async></script>
+<!-- <link rel="import" href="elements.v.html" async> -->
+<link rel="import" href="elements.html">
+<style is="custom-style">
+  body.loaded #loading {
+    opacity: 0;
+  }
+
+  paper-button {
+    position: absolute;
+    top: 16px;
+    left: 16px;
+    z-index: 100;
+    background-color: white;
+    @apply(--paper-font-button);
+  }
+
+  #search {
+    position: absolute;
+    z-index: 1;
+    margin-top: 16px;
+    width: 100%;
+  }
+
+  #loading {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 2;
+    font-size: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 600ms ease-in-out;
+    background: url(http://maps.googleapis.com/maps/api/staticmap?center=SanFrancisco&size=800x600&style=element:labels|visibility:off&style=element:geometry.stroke|visibility:off&style=feature:landscape|element:geometry|saturation:-100&style=feature:water|saturation:-100|invert_lightness:true) no-repeat 50% 50%;
+    background-size: cover;
+    background-color: rgb(38,38,38);
+  }
+
+  @media (max-width: 600px) {
+    #card-title {
+      margin-left: calc(56px - 24px/2);
+    }
+  }
+</style>
+</head>
+<body class="fullbleed">
+
+<div id="loading"></div>
+
+<template is="dom-bind" id="t">
+
+<div id="search" class="layout horizontal center-center">
+  <positional-search active="{{getLocation}}" query="{{query}}"
+                     on-geo-response="_onGeoResponse"></positional-search>
+</div>
+
+<google-map-search map="[[map]]" query="[[query]]" radius="5000"
+                   results="{{results}}"></google-map-search>
+
+<google-map-directions libraries="places"
+  end-address="[[selectedMarker.formatted_address]]"
+  on-google-map-response="_onDirectionsResponse"></google-map-directions>
+
+<google-map map="{{map}}" latitude="[[lat]]" longitude="[[lng]]"
+            libraries="places" zoom="12" disable-default-ui>
+
+  <template id="markerlist" is="dom-repeat" items="{{results}}" as="marker">
+    <google-map-marker
+        latitude="[[marker.latitude]]"
+        longitude="[[marker.longitude]]"
+        click-events on-google-map-marker-click="_onMarkerClick">
+    </google-map-marker>
+  </template>
+
+</google-map>
+
+<array-selector id="markerselector" items="{{results}}"
+                selected="{{selectedMarker}}"></array-selector>
+
+<info-card marker="[[selectedMarker]]" on-show-directions="_showDirections"></info-card>
+
+<!-- <paper-dialog id="bottom-sheet"
+              entry-animation="slide-up-and-fade-animation"
+              exit-animation="slide-down-and-fade-animation"
+              on-click="_eatClick">
+<header id="card-title">
+  <h2>{{selectedMarker.name}}</h2>
+  <star-rating rating="{{selectedMarker.rating}}"
+               total="{{selectedMarker.user_ratings_total}}"></star-rating>
+  <div class="away"><span>{{selectedMarker.duration}}</span> away</div>
+</header>
+
+<paper-fab icon="maps:directions-car" on-tap="_showDirections"></paper-fab>
+
+<paper-icon-item>
+  <iron-icon icon="maps:place" item-icon></iron-icon>
+  <span>{{selectedMarker.formatted_address}}</span>
+</paper-icon-item>
+<paper-icon-item>
+  <iron-icon icon="communication:phone" item-icon></iron-icon>
+  <span>{{selectedMarker.formatted_phone_number}}</span>
+</paper-icon-item>
+<paper-icon-item class="layout horizontal start"
+    hidden$="{{!selectedMarker.opening_hours.weekday_text.length}}">
+  <iron-icon icon="device:access-time" item-icon></iron-icon>
+  <div class="layout vertical">
+    <template is="dom-repeat"
+              items="{{selectedMarker.opening_hours.weekday_text}}" as="day">
+      <div>{{day}}</div>
+    </template>
+  </div>
+</paper-icon-item>
+
+</paper-dialog> -->
+
+</template>
+
+<script src="app.js"></script>
+</body>
+</html>

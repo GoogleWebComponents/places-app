@@ -1,0 +1,148 @@
+<link rel="import" href="bower_components/polymer/polymer.html">
+
+<!-- <link rel="import" href="bower_components/paper-styles/color.html">
+<link rel="import" href="bower_components/paper-styles/typography.html">
+
+<link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icons/maps-icons.html">
+<link rel="import" href="bower_components/iron-icons/communication-icons.html">
+<link rel="import" href="bower_components/iron-icons/device-icons.html"> -->
+
+<!-- <link rel="import" href="bower_components/paper-item/paper-item.html"> -->
+<link rel="import" href="bower_components/paper-item/paper-icon-item.html">
+
+<link rel="import" href="bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="bower_components/neon-animation/animations/transform-animation.html">
+
+<link rel="import" href="bower_components/paper-fab/paper-fab.html">
+
+<link rel="import" href="star-rating.html">
+
+<dom-module id="info-card">
+<template>
+<style>
+:host {
+  display: block:
+}
+paper-dialog {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 100%;
+  width: 600px;
+  margin: 0 auto;
+  overflow: initial !important; /* override paper-dialog */
+}
+paper-dialog paper-fab {
+  margin: 0;
+  position: absolute;
+  top: calc(-56px / 2);
+  right: 16px;
+  --paper-fab-background: var(--paper-green-500);
+  --paper-fab-keyboard-focus-background: var(--paper-green-700);
+}
+#card-title {
+  margin-left: calc(56px); /* icon width*/
+}
+
+#card-title h2 {
+  @apply(--paper-font-headline);
+  margin-bottom: 8px;
+}
+
+iron-icon[item-icon] {
+  opacity: var(--dark-secondary-opacity);
+}
+
+.away {
+  padding: 8px 0;
+  color: var(--paper-light-blue-700);
+  border-top: 1px solid var(--paper-grey-300);
+  border-bottom: 1px solid var(--paper-grey-300);
+  margin-top: 20px;
+}
+</style>
+
+<paper-dialog id="dialog"
+    entry-animation="slide-up-and-fade-animation"
+    exit-animation="slide-down-and-fade-animation" on-click="_eatClick">
+<header id="card-title">
+  <h2>{{marker.name}}</h2>
+  <star-rating rating="{{marker.rating}}"
+               total="{{marker.user_ratings_total}}"></star-rating>
+  <div class="away"><span>{{marker.duration}}</span> away</div>
+</header>
+
+<paper-fab icon="maps:directions-car" on-tap="_showDirections"></paper-fab>
+
+<paper-icon-item>
+  <iron-icon icon="maps:place" item-icon></iron-icon>
+  <span>{{marker.formatted_address}}</span>
+</paper-icon-item>
+<paper-icon-item>
+  <iron-icon icon="communication:phone" item-icon></iron-icon>
+  <span>{{marker.formatted_phone_number}}</span>
+</paper-icon-item>
+<paper-icon-item class="layout horizontal start"
+    hidden$="{{!marker.opening_hours.weekday_text.length}}">
+  <iron-icon icon="device:access-time" item-icon></iron-icon>
+  <div class="layout vertical">
+    <template is="dom-repeat"
+              items="{{marker.opening_hours.weekday_text}}" as="day">
+      <div>{{day}}</div>
+    </template>
+  </div>
+</paper-icon-item>
+
+</paper-dialog>
+
+</template>
+<script>
+  Polymer({
+    is: 'info-card',
+    properties: {
+      marker: {
+        type: Object,
+        value: function() { return {}; }
+        //notify: true
+      },
+      dismissOnOutsideClick: {
+        type: Boolean,
+        value: true,
+        observer: '_onDismissOnClickOutsideChanged'
+      }
+    },
+    open: function() {
+      this.$.dialog.animationConfig = {
+        entry: {
+          name: 'transform-animation',
+          node: this.$.dialog,
+          transformFrom: 'translateY(calc(100% + 56px/2))',
+          transformTo: 'translateY(0)'
+        },
+        exit: {
+          name: 'transform-animation',
+          node: this.$.dialog,
+          transformFrom: 'translateY(0)',
+          transformTo: 'translateY(calc(100% + 56px/2))'
+        }
+      };
+
+      this.$.dialog.open();
+    },
+    close: function() {
+      this.$.dialog.close();
+    },
+    _showDirections: function() {
+      this.fire('show-directions');
+    },
+    _onDismissOnClickOutsideChanged: function() {
+      this.$.dialog.noCancelOnOutsideClick = this.dismissOnOutsideClick;
+    },
+    _eatClick: function(e, detail) {
+      e.stopPropagation();
+    }
+  });
+</script>
+</dom-module>

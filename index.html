@@ -4,7 +4,7 @@
 <title>Polymer material design places search</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js" async></script>
 <!-- <link rel="import" href="elements.v.html" async> -->
-<link rel="import" href="elements.html">
+<link rel="import" href="elements.html" async>
 <style is="custom-style">
   body.loaded #loading {
     opacity: 0;
@@ -33,14 +33,22 @@
     right: 0;
     bottom: 0;
     z-index: 2;
-    font-size: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
     transition: opacity 600ms ease-in-out;
-    background: url(http://maps.googleapis.com/maps/api/staticmap?center=SanFrancisco&size=800x600&style=element:labels|visibility:off&style=element:geometry.stroke|visibility:off&style=feature:landscape|element:geometry|saturation:-100&style=feature:water|saturation:-100|invert_lightness:true) no-repeat 50% 50%;
-    background-size: cover;
+    background: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 23 23' width='150' height='150'><path fill='#fff' d='M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z'/></svg>") no-repeat 50% calc(50% - 100px);
+    background-size: 200px;
     background-color: rgb(38,38,38);
+  }
+
+  #loading::after {
+    content: 'Loading map things';
+    color: #fff;
+    font-weight: 300;
+    font-family: 'Roboto', sans-serif;
+    font-size: 28px;
+    margin-top: 100px;
   }
 
   @media (max-width: 600px) {
@@ -72,10 +80,10 @@
               libraries="places" zoom="12" disable-default-ui>
 
     <template id="markerlist" is="dom-repeat" items="{{results}}" as="marker">
-      <google-map-marker
-          latitude="[[marker.latitude]]"
-          longitude="[[marker.longitude]]"
-          click-events on-google-map-marker-click="_onMarkerClick">
+      <google-map-marker latitude="[[marker.latitude]]"
+                         longitude="[[marker.longitude]]"
+                         click-events on-google-map-marker-click="_onMarkerClick"
+                         animation="DROP">
       </google-map-marker>
     </template>
 

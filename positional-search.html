@@ -1,7 +1,11 @@
 <link rel="import" href="bower_components/polymer/polymer.html">
-<link rel="import" href="bower_components/paper-toolbar/paper-toolbar.html">
+
+<link rel="import" href="bower_components/paper-styles/color.html">
+<link rel="import" href="bower_components/paper-styles/typography.html">
+
 <link rel="import" href="bower_components/geo-location/geo-location.html">
 <link rel="import" href="bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="bower_components/iron-icons/maps-icons.html">
 <link rel="import" href="bower_components/iron-icons/device-icons.html">
 <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
@@ -9,21 +13,21 @@
 
 <dom-module id="positional-search">
 <template>
-<style>
-:host {
-  display: inline-block:
-}
-paper-icon-button {
-  opacity: var(--dark-secondary-opacity);
-}
-input {
-  position: relative;
-  z-index: 1;
-  outline: none;
-  border: none;
-  @apply(--paper-font-title);
-}
-</style>
+  <style>
+  :host {
+    display: inline-block:
+  }
+  paper-icon-button {
+    opacity: var(--dark-secondary-opacity);
+  }
+  input {
+    position: relative;
+    z-index: 1;
+    outline: none;
+    border: none;
+    @apply(--paper-font-title);
+  }
+  </style>
 
   <template is="dom-if" if="[[active]]">
     <geo-location watchpos></geo-location>

@@ -1,5 +1,5 @@
 {
-  "name": "perf",
+  "name": "Polymer Material Design places search",
   "version": "0.0.0",
   "authors": [
     "Eric Bidelman <ebidel@gmail.com>"
@@ -14,7 +14,7 @@
   ],
   "dependencies": {
     "geo-location": "ebidel/geo-location#~1.0.0",
-    "google-map": "GoogleWebComponents/google-map#~1.1.1",
+    "google-map": "GoogleWebComponents/google-map#~1.1.2",
     "iron-elements": "PolymerElements/iron-elements#~1.0.4",
     "paper-elements": "PolymerElements/paper-elements#~1.0.5",
     "polymer": "Polymer/polymer#~1.1.3"

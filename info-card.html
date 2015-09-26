@@ -61,7 +61,7 @@ iron-icon[item-icon] {
     <star-rating rating="{{marker.rating}}"
                  total="{{marker.user_ratings_total}}"></star-rating>
   </template>
-  <div class="away"><span>{{marker.duration}}</span> away</div>
+  <div class="away">{{_computeDurationStr(marker.duration)}}</div>
 </header>
 
 <paper-fab icon="maps:directions-car" on-tap="_showDirections"></paper-fab>
@@ -126,6 +126,9 @@ iron-icon[item-icon] {
     },
     _showDirections: function() {
       this.fire('show-directions');
+    },
+    _computeDurationStr: function(duration) {
+      return duration ? duration + ' away' : 'Unknown distance from you';
     },
     _onDismissOnClickOutsideChanged: function() {
       this.$.dialog.noCancelOnOutsideClick = this.dismissOnOutsideClick;

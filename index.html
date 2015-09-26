@@ -3,8 +3,8 @@
 <head>
 <title>Polymer material design places search</title>
 <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js" async></script>
-<!-- <link rel="import" href="elements.v.html" async> -->
-<link rel="import" href="elements.html" async>
+<!-- <link rel="import" href="elements.build.html" async> -->
+<link rel="import" href="elements.html">
 <style is="custom-style">
   body.loaded #loading {
     opacity: 0;
@@ -24,6 +24,11 @@
     z-index: 1;
     margin-top: 16px;
     width: 100%;
+    pointer-events: none;
+  }
+
+  positional-search {
+    pointer-events: all;
   }
 
   #loading {
@@ -64,13 +69,16 @@
 
 <template is="dom-bind" id="t">
 
-  <div id="search" class="layout horizontal center-center">
+  <div id="search" class="layout vertical center-center">
     <positional-search active="{{getLocation}}" query="{{query}}"
-                       on-geo-response="_onGeoResponse"></positional-search>
+                       on-geo-response="_onGeoResponse"
+                       on-search="_onSearch"
+                       loading="{{_searching}}"></positional-search>
   </div>
 
   <google-map-search map="[[map]]" query="[[query]]" radius="5000"
-                     results="{{results}}"></google-map-search>
+                     results="{{results}}"
+                     on-google-map-search-results="_onMapResults"></google-map-search>
 
   <google-map-directions libraries="places"
     end-address="[[selectedMarker.formatted_address]]"

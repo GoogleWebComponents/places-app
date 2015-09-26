@@ -9,6 +9,7 @@ var selector = null;
 
 var t = document.querySelector('#t');
 t.getLocation = false;
+t._searching = false;
 
 t.addEventListener('dom-change', function(e) {
   infoCard = document.querySelector('info-card');
@@ -20,6 +21,14 @@ t.addEventListener('dom-change', function(e) {
 t._onDirectionsResponse = function(e, detail) {
   var dur = detail.response.routes[0].legs[0].duration.text;
   this.set('selectedMarker.duration', dur);
+};
+
+t._onSearch = function(e, detail) {
+  this._searching = true;
+};
+
+t._onMapResults = function(e, detail) {
+  this._searching = false;
 };
 
 t._onGeoResponse = function(e, detail) {
@@ -42,6 +51,7 @@ t._onMarkerClick = function(e, detail) {
 };
 
 t._showDirections = function(e, detail) {
+  this.getLocation = true; // Ensure we have user's location.
   mapDirections.map = mapSearch.map; // setting the map displays the directions.
   t.async(function() {
     infoCard.close();

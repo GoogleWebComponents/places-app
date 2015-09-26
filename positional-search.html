@@ -11,11 +11,13 @@
 <link rel="import" href="bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="bower_components/paper-card/paper-card.html">
 
+<link rel="import" href="bower_components/paper-progress/paper-progress.html">
+
 <dom-module id="positional-search">
 <template>
   <style>
   :host {
-    display: inline-block:
+    display: inline-block;
   }
   paper-icon-button {
     opacity: var(--dark-secondary-opacity);
@@ -26,6 +28,15 @@
     outline: none;
     border: none;
     @apply(--paper-font-title);
+  }
+  paper-progress {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    bottom: 0;
+    z-index: 1;
+    height: 2px;
+    --paper-progress-container-color: #fff;
   }
   </style>
 
@@ -39,6 +50,9 @@
     <paper-icon-button icon="clear" on-tap="_clearInput"></paper-icon-button>
     <paper-icon-button icon="{{_computeGPSIcon(active)}}"
           on-tap="getPosition"></paper-icon-button>
+    <template is="dom-if" if="[[loading]]">
+      <paper-progress indeterminate></paper-progress>
+    </template>
   </paper-card>
 
 </template>
@@ -55,13 +69,18 @@
         type: String,
         value: null,
         notify: true,
-      }
+      },
+      loading: {
+        type: Boolean,
+        value: false
+      },
     },
     _computeGPSIcon: function(active) {
       return active ? 'device:gps-fixed' : 'device:gps-not-fixed';
     },
     _onInputChange: function(e, detail) {
       this.query = e.target.value;
+      this.fire('search');
     },
     _clearInput: function(e, detail) {
       this.$.input.value = null;

@@ -25,6 +25,7 @@ t._onDirectionsResponse = function(e, detail) {
 
 t._onSearch = function(e, detail) {
   this._searching = true;
+  mapDirections.map = null; // remove displayed directions when marker is clicked.
 };
 
 t._onMapResults = function(e, detail) {

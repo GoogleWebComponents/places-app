@@ -6622,15 +6622,6 @@ Any number of components can use `<google-maps-api>` elements, and the library w
       },
 
       /**
-       * The libraries to load with this map. For more information
-       * see https://developers.google.com/maps/documentation/javascript/libraries.
-       */
-      libraries: {
-        type: String,
-        value: ''
-      },
-
-      /**
        * Version of the Maps API to use.
        */
       version: {
@@ -6673,16 +6664,15 @@ Any number of components can use `<google-maps-api>` elements, and the library w
       /** @private */
       libraryUrl: {
         type: String,
-        computed: '_computeUrl(mapsUrl, version, libraries, apiKey, clientId, language, signedIn)'
+        computed: '_computeUrl(mapsUrl, version, apiKey, clientId, language, signedIn)'
       }
     },
 
-    _computeUrl: function(mapsUrl, version, libraries, apiKey, clientId, language, signedIn) {
+    _computeUrl: function(mapsUrl, version, apiKey, clientId, language, signedIn) {
       var url = mapsUrl + '&v=' + version;
 
-      if (libraries) {
-        url += "&libraries=" + libraries;
-      }
+      // Always load all Maps API libraries.
+      url += '&libraries=drawing,geometry,places,visualization';
 
       if (apiKey && !clientId) {
         url += '&key=' + apiKey;
@@ -7460,6 +7450,9 @@ Polymer({
      */
     _nameChanged: function() {
       new Polymer.IronMeta({type: 'iconset', key: this.name, value: this});
+      this.async(function() {
+        this.fire('iron-iconset-added', this, {node: window});
+      });
     },
 
     /**
@@ -7743,7 +7736,7 @@ Polymer({
      * `keys` property is pressed.
      *
      * @demo demo/index.html
-     * @polymerBehavior IronA11yKeysBehavior
+     * @polymerBehavior
      */
     Polymer.IronA11yKeysBehavior = {
       properties: {
@@ -8371,7 +8364,9 @@ Polymer({
     *
     * as a work around we can divide by the reciprocal of `step`
     */
-    return this.step ? (Math.round(value / this.step) / (1 / this.step)) : value;
+    // polymer/issues/2493
+    value = parseFloat(value);
+    return this.step ? (Math.round((value + this.min) / this.step) / (1 / this.step)) - this.min : value;
   },
 
   _validateValue: function() {
@@ -9085,7 +9080,8 @@ intent. Closing generally implies that the user acknowledged the content on the 
 it will cancel whenever the user taps outside it or presses the escape key. This behavior is
 configurable with the `no-cancel-on-esc-key` and the `no-cancel-on-outside-click` properties.
 `close()` should be called explicitly by the implementer when the user interacts with a control
-in the overlay element.
+in the overlay element. When the dialog is canceled, the overlay fires an 'iron-overlay-canceled'
+event. Call `preventDefault` on this event to prevent the overlay from closing.
 
 ### Positioning
 
@@ -9256,6 +9252,11 @@ context. You should place this element as a child of `<body>` whenever possible.
      * Cancels the overlay.
      */
     cancel: function() {
+      var cancelEvent = this.fire('iron-overlay-canceled', undefined, {cancelable: true});
+      if (cancelEvent.defaultPrevented) {
+        return;
+      }
+
       this.opened = false;
       this._setCanceled(true);
     },
@@ -10175,16 +10176,6 @@ Polymer({
       },
 
       /**
-       * A comma separated list (e.g. "places,geometry") of libraries to load
-       * with this map. Defaults to "". For more information see
-       * https://developers.google.com/maps/documentation/javascript/libraries.
-       */
-      libraries: {
-        type: String,
-        value: ''
-      },
-
-      /**
        * A longitude to center the map on.
        */
       longitude: {
@@ -10772,20 +10763,6 @@ Fired whenever the directions service returns a result.
        },
 
       /**
-       * A comma separated list (e.g. "places,geometry") of libraries to load
-       * with this map. Defaults to "places". For more information see
-       * https://developers.google.com/maps/documentation/javascript/libraries.
-       *
-       * Note, this needs to be set to the same value as the one used on <google-map>.
-       * If you're overriding that element's `libraries` property, this one also
-       * needs to be set to the Maps API loads the library code.
-       */
-      libraries: {
-        type: String,
-        value: 'places'
-      },
-
-      /**
        * The localized language to load the Maps API with. For more information
        * see https://developers.google.com/maps/documentation/javascript/basics#Language
        *
@@ -11049,11 +11026,14 @@ Polymer({
           type: String,
           observer: '_srcChanged'
         },
-        
+
+        /**
+         * @type {!Polymer.IronMeta}
+         */
         _meta: {
           value: Polymer.Base.create('iron-meta', {type: 'iconset'})
         }
-        
+
       },
 
       _DEFAULT_ICONSET: 'icons',
@@ -11077,12 +11057,13 @@ Polymer({
       _updateIcon: function() {
         if (this._usesIconset()) {
           if (this._iconsetName) {
-            this._iconset = this._meta.byKey(this._iconsetName);
+            this._iconset = /** @type {?Polymer.Iconset} */ (
+              this._meta.byKey(this._iconsetName));
             if (this._iconset) {
               this._iconset.applyIcon(this, this._iconName, this.theme);
+              this.unlisten(window, 'iron-iconset-added', '_updateIcon');
             } else {
-              this._warn(this._logf('_updateIcon', 'could not find iconset `'
-                + this._iconsetName + '`, did you import the iconset?'));
+              this.listen(window, 'iron-iconset-added', '_updateIcon');
             }
           }
         } else {

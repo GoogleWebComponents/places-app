@@ -79,16 +79,15 @@
                        loading="{{_searching}}"></positional-search>
   </div>
 
-  <google-map-search map="[[map]]" query="[[query]]" radius="5000"
-                     results="{{results}}"
+  <google-map-search map="[[map]]" query="[[query]]" radius="5000" results="{{results}}"
                      on-google-map-search-results="_onMapResults"></google-map-search>
 
-  <google-map-directions libraries="places"
+  <google-map-directions
     end-address="[[selectedMarker.formatted_address]]"
     on-google-map-response="_onDirectionsResponse"></google-map-directions>
 
   <google-map map="{{map}}" latitude="[[lat]]" longitude="[[lng]]"
-              libraries="places" zoom="12" disable-default-ui>
+              zoom="12" disable-default-ui>
 
     <template id="markerlist" is="dom-repeat" items="{{results}}" as="marker">
       <google-map-marker latitude="[[marker.latitude]]"

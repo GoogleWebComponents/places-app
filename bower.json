@@ -1,6 +1,6 @@
 {
   "name": "Polymer Material Design places search",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "authors": [
     "Eric Bidelman <ebidel@gmail.com>"
   ],
@@ -14,9 +14,9 @@
   ],
   "dependencies": {
     "geo-location": "ebidel/geo-location#~1.0.0",
-    "google-map": "GoogleWebComponents/google-map#~1.1.2",
-    "iron-elements": "PolymerElements/iron-elements#~1.0.4",
-    "paper-elements": "PolymerElements/paper-elements#~1.0.5",
-    "polymer": "Polymer/polymer#~1.1.3"
+    "google-map": "GoogleWebComponents/google-map#^1.1.3",
+    "iron-elements": "PolymerElements/iron-elements#^1.0.4",
+    "paper-elements": "PolymerElements/paper-elements#^1.0.5",
+    "polymer": "Polymer/polymer#^1.1.4"
   }
 }
